@@ -1,0 +1,15 @@
+numpy~=1.26.4
+requests~=2.31.0
+opencv-python
+pydantic
+fastapi
+uvicorn
+pyjwt
+streamlit
+gradio
+pytest
+loguru
+boto3
+google-api-python-client
+prometheus-client
+python-dotenv
