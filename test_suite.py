@@ -97,7 +97,7 @@ class TestStorageManager(unittest.TestCase):
 
 class TestConfigManager(unittest.TestCase):
     def setUp(self):
-        self.config_file = "test_config.json"
+        self.config_file = "logs/test_config.json"
         config_data = {
             "dev": {"param1": "value1", "param2": 2},
             "prod": {"param1": "valueX", "param2": 10}

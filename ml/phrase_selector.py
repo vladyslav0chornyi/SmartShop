@@ -17,7 +17,7 @@ class PhraseSelector:
             sync_interval=300,  # seconds
             lang="uk",
             config_url=None,
-            history_path="phrase_history.json",
+            history_path="logs/phrase_history.json",
             filter_repeat=True,
             filter_window=5,
             enable_visualization=True,

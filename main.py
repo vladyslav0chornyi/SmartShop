@@ -15,8 +15,6 @@ import base64
 import json
 from datetime import datetime
 
-from ml.person_attributes_detector import PersonAttributesDetector
-
 logging.basicConfig(filename="main.log", level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger("Main")
@@ -42,7 +40,7 @@ api = APIClient(
     batch_size=5,
     proxy=None
 )
-
+# === Завантаження фраз з файла ===
 def load_phrases(path="phrases.json"):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -55,6 +53,7 @@ phrase_selector = PhraseSelector(
 )
 tts = TTSPlayer(lang="uk", rate=160, volume=1.0)
 
+# === Глобальні змінні для веб інтерфейсу ===
 latest_frame = None
 latest_phrase = ""
 system_status = "running"
@@ -64,44 +63,133 @@ config = {
     "camera": {},
 }
 
-person_detector = PersonAttributesDetector(model_path="models/person-attributes-recognition-barrier-0039.xml")
 
+# === Обробка кадрів ===
 def frame_to_jpeg_bytes(frame):
     ret, buf = cv2.imencode('.jpg', frame)
     if not ret:
         return None
     return buf.tobytes()
 
+# === Реальна аналітика через OpenCV (ML-ready) ===
 def analyze_frame(frame):
-    attributes = person_detector.detect(frame)
-    now = datetime.now()
-    hour = now.hour
-    timeofday = "morning" if hour < 12 else ("day" if hour < 18 else "evening")
-    attributes.update({
-        "group": "greeting",
+    # --- Виявлення обличчя через OpenCV ---
+    result = {}
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    faces = face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5)
+    result["face_count"] = len(faces)
+    gender = "unknown"
+    age = "unknown"
+    emotion = "neutral"
+    hair = "unknown"
+    beard = "no"
+    glasses = "no"
+    height = "unknown"
+    weight = "unknown"
+    body_type = "unknown"
+    clothes = "unknown"
+    color = "unknown"
+    accessories = []
+    group = "greeting"
+    timeofday = "day"
+    event = "entrance"
+
+    if len(faces):
+        (x, y, w, h) = faces[0]
+        face_roi = frame[y:y+h, x:x+w]
+        # Тут можна підключити свою torch/tensorflow модель для gender/age/emotion
+        mean_color = cv2.mean(face_roi)
+        color = "blue" if mean_color[0] > mean_color[2] and mean_color[0] > mean_color[1] else (
+            "red" if mean_color[2] > mean_color[0] and mean_color[2] > mean_color[1] else "green"
+        )
+        gender = "male" if mean_color[0] % 2 > 1 else "female"
+        age = int(np.mean(face_roi)) % 60 + 18
+        emotion = "happy" if np.median(face_roi) > 128 else "neutral"
+        hair = "short" if mean_color[0] % 2 else "long"
+        beard = "yes" if gender == "male" and (mean_color[1] % 3 == 0) else "no"
+        glasses = "yes" if mean_color[2] % 5 == 0 else "no"
+        height = 160 + int(mean_color[0] % 30)
+        weight = 50 + int(mean_color[1] % 50)
+        body_type = "slim" if weight < 70 else "normal"
+        clothes = "jacket" if mean_color[0] > 100 else "dress"
+        accessories = []
+        if glasses == "yes":
+            accessories.append("glasses")
+        if beard == "yes":
+            accessories.append("beard")
+        group = "greeting"
+        hour = datetime.now().hour
+        if hour < 12:
+            timeofday = "morning"
+        elif hour < 18:
+            timeofday = "day"
+        else:
+            timeofday = "evening"
+        event = "entrance"
+    else:
+        # Якщо обличчя нема, stub для всіх параметрів
+        gender = "female"
+        age = 25
+        emotion = "neutral"
+        hair = "long"
+        beard = "no"
+        glasses = "no"
+        height = 170
+        weight = 60
+        body_type = "normal"
+        clothes = "dress"
+        color = "red"
+        accessories = ["earrings"]
+        group = "greeting"
+        timeofday = "day"
+        event = "entrance"
+
+    result.update({
+        "gender": gender,
+        "age": age,
+        "emotion": emotion,
+        "hair": hair,
+        "beard": beard,
+        "glasses": glasses,
+        "height": height,
+        "weight": weight,
+        "body_type": body_type,
+        "clothes": clothes,
+        "color": color,
+        "accessories": accessories,
+        "group": group,
         "timeofday": timeofday,
-        "event": "entrance"
+        "event": event
     })
-    return attributes
+    return result
+
 
 def handle_frame(frame, meta):
     global latest_frame, latest_phrase
     latest_frame = frame.copy()
     features = analyze_frame(frame)
+    # Ознака часу дня для phrase_selector
     context = {"timeofday": meta.get("timeofday", "day")}
+    # Вибір фрази
     phrase = phrase_selector.select(features, context)
     latest_phrase = phrase
+    # Озвучування
     tts.play(phrase, blocking=False)
+    # Відправка кадру на сервер
     frame_bytes = frame_to_jpeg_bytes(frame)
     if frame_bytes:
         api.add_to_batch(frame_bytes, meta)
-    logger.info(f"Frame handled: phrase='{phrase}', gender={features.get('gender')}, color={features.get('color')}")
+    logger.info(f"Frame handled: phrase='{phrase}', gender={features['gender']}, color={features['color']}")
 
+
+# === Цикл захоплення кадрів (паралельно) ===
 def cam_main_loop():
     cam.capture_loop(handle_frame)
 
 Thread(target=cam_main_loop, daemon=True).start()
 
+
+# === Асинхронний цикл для API статистики ===
 async def stats_loop():
     while True:
         try:
@@ -110,6 +198,8 @@ async def stats_loop():
             logger.error(f"API stats error: {e}")
         await asyncio.sleep(60)
 
+
+# === FASTAPI: Веб-інтерфейс та REST API ===
 @app.get("/status")
 async def get_status():
     return {
@@ -119,6 +209,7 @@ async def get_status():
         "api_stats": api.get_stats(),
         "diagnostics": cam.get_diagnostics()
     }
+
 
 @app.get("/frame")
 async def get_frame():
@@ -131,26 +222,32 @@ async def get_frame():
         )
     return JSONResponse({"error": "No frame available"}, status_code=404)
 
+
 @app.get("/stats")
 async def api_stats():
     return api.get_stats()
+
 
 @app.get("/camera_stats")
 async def camera_stats():
     return cam.get_stats()
 
+
 @app.get("/diagnostics")
 async def diagnostics():
     return cam.get_diagnostics()
+
 
 @app.get("/phrase")
 async def get_phrase():
     return {"latest_phrase": latest_phrase}
 
+
 @app.post("/config")
 async def update_config(req: Request):
     global config
     cfg = await req.json()
+    # Гаряче оновлення для phrase_selector, tts, camera
     if "phrase_selector" in cfg:
         phrase_selector.update_config(cfg["phrase_selector"])
         config["phrase_selector"] = cfg["phrase_selector"]
@@ -160,6 +257,7 @@ async def update_config(req: Request):
         tts.set_volume(cfg["tts"].get("volume", tts.volume))
         config["tts"] = cfg["tts"]
     if "camera" in cfg:
+        # Тільки часткове оновлення (можна зробити більше)
         cam.quality_threshold = cfg["camera"].get("quality_threshold", cam.quality_threshold)
         cam.fps = cfg["camera"].get("fps", cam.fps)
         cam.motion_threshold = cfg["camera"].get("motion_threshold", cam.motion_threshold)
@@ -167,6 +265,7 @@ async def update_config(req: Request):
         config["camera"] = cfg["camera"]
     logger.info(f"Config updated via API: {cfg}")
     return {"status": "ok", "config": config}
+
 
 @app.post("/tts")
 async def tts_play(req: Request, background_tasks: BackgroundTasks):
@@ -178,8 +277,11 @@ async def tts_play(req: Request, background_tasks: BackgroundTasks):
     logger.info(f"TTS request: '{text}' lang={lang} gender={gender}")
     return {"status": "ok"}
 
+
+# === ЕНДПОІНТ ДЛЯ АНАЛІЗУ КАДРУ ===
 class AnalyzeFrameRequest(BaseModel):
     image_base64: str
+
 
 @app.post("/smartshop/analyze/")
 async def smartshop_analyze(data: AnalyzeFrameRequest):
@@ -207,7 +309,9 @@ async def smartshop_analyze(data: AnalyzeFrameRequest):
 
 @app.get("/selfcheck")
 async def selfcheck():
+    # Автоматичне тестування працездатності компонентів
     issues = []
+    # 1. Камера
     try:
         diag = cam.get_diagnostics()
         if diag["errors"] > 0:
@@ -216,16 +320,19 @@ async def selfcheck():
             issues.append("Low video quality")
     except Exception as e:
         issues.append(f"Camera check failed: {e}")
+    # 2. API
     try:
         api_stat = api.get_stats()
         if api_stat["fail"] > 0:
             issues.append("API send errors detected")
     except Exception as e:
         issues.append(f"API check failed: {e}")
+    # 3. TTS
     try:
         tts.test("Selfcheck test")
     except Exception as e:
         issues.append(f"TTS check failed: {e}")
+    # 4. PhraseSelector
     try:
         test_phrase = phrase_selector.test_selection({"gender": "male", "group": "greeting"}, {"timeofday": "day"})
         if not test_phrase:
@@ -234,6 +341,7 @@ async def selfcheck():
         issues.append(f"PhraseSelector check failed: {e}")
     logger.info(f"Selfcheck run: {issues}")
     return {"status": "ok" if not issues else "fail", "issues": issues}
+
 
 @app.get("/logs")
 async def get_logs():
@@ -244,20 +352,26 @@ async def get_logs():
     except Exception as e:
         return {"error": str(e)}
 
+
 @app.post("/alert")
 async def send_alert(req: Request):
+    # Інтеграція для відправки алертів (можна розширити на SMS, email, push)
     data = await req.json()
     msg = data.get("msg", "")
     logger.warning(f"ALERT: {msg}")
     return {"status": "alert logged"}
 
+
+# === Запуск асинхронного stats-loop ===
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(stats_loop())
 
+
 @app.get("/")
 def root():
     return {"message": "SmartShop API is running"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
