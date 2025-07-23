@@ -17708,3 +17708,70 @@
 2025-07-23 02:39:47,760 WARNING Погана якість кадру: 0.5086555501302082
 2025-07-23 02:39:47,762 ERROR Помилка відправки діагностики: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-diagnostics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ed204b6b830>: Failed to establish a new connection: [Errno 111] Connection refused'))
 2025-07-23 02:39:47,763 INFO Адаптивний FPS: 2
+2025-07-23 02:44:39,187 INFO Відкриваю камеру: 0
+2025-07-23 02:44:39,374 INFO Камера відкрита успішно
+2025-07-23 02:44:39,410 INFO Встановлено голос: zle/uk
+2025-07-23 02:44:39,419 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc4abf680>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:39,468 ERROR Помилка відправки статистики: Cannot connect to host localhost:5000 ssl:default [Connect call failed ('127.0.0.1', 5000)]
+2025-07-23 02:44:40,165 WARNING Погана якість кадру: 0.4976757438659669
+2025-07-23 02:44:40,165 INFO Адаптивний FPS: 9
+2025-07-23 02:44:40,279 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3439160>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:40,290 WARNING Погана якість кадру: 0.5086570823192599
+2025-07-23 02:44:40,292 INFO Адаптивний FPS: 8
+2025-07-23 02:44:40,419 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3439820>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:40,429 WARNING Погана якість кадру: 0.5105110285229153
+2025-07-23 02:44:40,431 INFO Адаптивний FPS: 7
+2025-07-23 02:44:40,577 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3439f40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:40,586 WARNING Погана якість кадру: 0.5279002954906886
+2025-07-23 02:44:40,588 INFO Адаптивний FPS: 6
+2025-07-23 02:44:40,757 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3439580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:40,766 WARNING Погана якість кадру: 0.5532729227224985
+2025-07-23 02:44:40,768 INFO Адаптивний FPS: 5
+2025-07-23 02:44:40,971 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3438d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:40,980 WARNING Погана якість кадру: 0.5165803127235836
+2025-07-23 02:44:40,982 INFO Адаптивний FPS: 4
+2025-07-23 02:44:41,235 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343a1b0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:41,244 WARNING Погана якість кадру: 0.4942707492192586
+2025-07-23 02:44:41,246 INFO Адаптивний FPS: 3
+2025-07-23 02:44:41,582 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343a9c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:41,591 WARNING Погана якість кадру: 0.4815834655708737
+2025-07-23 02:44:41,593 INFO Адаптивний FPS: 2
+2025-07-23 02:44:42,096 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343b200>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:42,105 WARNING Погана якість кадру: 0.5087857918421428
+2025-07-23 02:44:42,107 INFO Адаптивний FPS: 2
+2025-07-23 02:44:42,610 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343b800>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:42,619 WARNING Погана якість кадру: 0.49124017706976997
+2025-07-23 02:44:42,621 INFO Адаптивний FPS: 2
+2025-07-23 02:44:43,123 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343a630>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:43,133 WARNING Погана якість кадру: 0.5221711964925131
+2025-07-23 02:44:43,135 INFO Адаптивний FPS: 2
+2025-07-23 02:44:43,637 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc34381d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:43,646 WARNING Погана якість кадру: 0.5328775253083973
+2025-07-23 02:44:43,648 INFO Адаптивний FPS: 2
+2025-07-23 02:44:44,151 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc3438d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:44,160 WARNING Погана якість кадру: 0.5455465898301864
+2025-07-23 02:44:44,162 INFO Адаптивний FPS: 2
+2025-07-23 02:44:44,664 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc34395e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:44,673 WARNING Погана якість кадру: 0.4999152485317656
+2025-07-23 02:44:44,675 INFO Адаптивний FPS: 2
+2025-07-23 02:44:45,177 ERROR Помилка отримання конфігу з API: HTTPConnectionPool(host='localhost', port=5000): Max retries exceeded with url: /camera-config (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x753fc343b830>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-23 02:44:45,187 WARNING Погана якість кадру: 0.5767203711138832
+2025-07-23 02:44:45,188 INFO Адаптивний FPS: 2
+2025-07-23 02:52:21,518 INFO Відкриваю камеру: 0
+2025-07-23 02:52:21,707 INFO Камера відкрита успішно
+2025-07-23 02:52:21,748 INFO Встановлено голос: zle/uk
+2025-07-23 02:56:11,260 INFO Відкриваю камеру: 0
+2025-07-23 02:56:11,448 INFO Камера відкрита успішно
+2025-07-23 02:56:11,490 INFO Встановлено голос: zle/uk
+2025-07-23 02:59:05,544 INFO Відкриваю камеру: 0
+2025-07-23 02:59:05,737 INFO Камера відкрита успішно
+2025-07-23 02:59:05,789 INFO Встановлено голос: zle/uk
+2025-07-23 03:07:34,677 INFO Відкриваю камеру: 0
+2025-07-23 03:07:34,862 INFO Камера відкрита успішно
+2025-07-23 03:07:34,906 INFO Встановлено голос: zle/uk
+2025-07-23 03:08:49,378 INFO Відкриваю камеру: 0
+2025-07-23 03:08:49,565 INFO Камера відкрита успішно
+2025-07-23 03:08:49,607 INFO Встановлено голос: zle/uk
+2025-07-23 03:09:48,098 INFO Відкриваю камеру: 0
+2025-07-23 03:09:48,285 INFO Камера відкрита успішно
+2025-07-23 03:09:48,324 INFO Встановлено голос: zle/uk

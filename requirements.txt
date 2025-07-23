@@ -15,3 +15,4 @@ prometheus-client
 python-dotenv
 aiohttp
 pyttsx3
+openvino
